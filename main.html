@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Troubleshooting – Build-A-Bot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            padding: 60px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            padding: 0 0 40px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 50px;
+        }
+
+        /* Issues Grid */
+        .issues-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .issue-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 5px solid #667eea;
+        }
+
+        .issue-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .issue-card:nth-child(even) {
+            border-left-color: #764ba2;
+        }
+
+        .issue-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .issue-icon {
+            font-size: 1.8rem;
+            margin-right: 12px;
+        }
+
+        .cause-section {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .cause-label {
+            font-weight: 700;
+            color: #856404;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .cause-text {
+            color: #856404;
+            font-size: 0.95rem;
+        }
+
+        .fix-section {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .fix-label {
+            font-weight: 700;
+            color: #155724;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .fix-text {
+            color: #155724;
+            font-size: 0.95rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+            color: white;
+            text-align: center;
+            padding: 60px 30px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+
+        .cta-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-subtitle {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .whatsapp-btn {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 18px 35px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(10px);
+        }
+
+        .whatsapp-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .whatsapp-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            fill: currentColor;
+        }
+
+        .response-time {
+            font-size: 0.9rem;
+            margin-top: 15px;
+            opacity: 0.8;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Footer */
+        .footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        .footer-logo {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .footer-tagline {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .header {
+                padding: 40px 0;
+            }
+
+            .logo {
+                font-size: 2.5rem;
+            }
+
+            .subtitle {
+                font-size: 1.1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .issues-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .issue-card {
+                padding: 25px 20px;
+            }
+
+            .issue-title {
+                font-size: 1.2rem;
+            }
+
+            .cta-section {
+                padding: 40px 20px;
+            }
+
+            .cta-title {
+                font-size: 1.8rem;
+            }
+
+            .whatsapp-btn {
+                padding: 15px 30px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 580px) {
+            .issues-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .issue-card {
+                padding: 20px 15px;
+            }
+
+            .logo {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">🤖 Build-A-Bot</h1>
+            <p class="subtitle">Need help? You're in the right place!</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <h2 class="section-title">Common Issues and Fixes</h2>
+            <p class="section-subtitle">Quick solutions to get your robot back up and running</p>
+
+            <div class="issues-grid">
+                <!-- Issue 1: Motors not working -->
+                <div class="issue-card">
+                    <h3 class="issue-title">
+                        <span class="issue-icon">⚡</span>
+                        Motors not working
+                    </h3>
+                    
+                    <div class="cause-section">
+                        <div class="cause-label">Cause</div>
+                        <div class="cause-text">Loose motor wires or incorrect driver connections.</div>
+                    </div>
+                    
+                    <div class="fix-section">
+                        <div class="fix-label">Fix</div>
+                        <div class="fix-text">Make sure the motor wires are firmly connected to the motor driver (L293D), and that the driver's power (VCC) and ground (GND) are properly connected to the battery and Arduino.</div>
+                    </div>
+                </div>
+
+                <!-- Issue 2: Ultrasonic sensor not detecting -->
+                <div class="issue-card">
+                    <h3 class="issue-title">
+                        <span class="issue-icon">📡</span>
+                        Ultrasonic sensor not detecting
+                    </h3>
+                    
+                    <div class="cause-section">
+                        <div class="cause-label">Cause</div>
+                        <div class="cause-text">TRIG/ECHO pins connected to wrong Arduino pins.</div>
+                    </div>
+                    
+                    <div class="fix-section">
+                        <div class="fix-label">Fix</div>
+                        <div class="fix-text">Double-check the pin connections in the code and match them on the breadboard. Ensure the sensor is facing forward and not too close to the ground.</div>
+                    </div>
+                </div>
+
+                <!-- Issue 3: Bluetooth not connecting -->
+                <div class="issue-card">
+                    <h3 class="issue-title">
+                        <span class="issue-icon">📶</span>
+                        Bluetooth not connecting
+                    </h3>
+                    
+                    <div class="cause-section">
+                        <div class="cause-label">Cause</div>
+                        <div class="cause-text">HC-05 not powered, or wrong pairing password.</div>
+                    </div>
+                    
+                    <div class="fix-section">
+                        <div class="fix-label">Fix</div>
+                        <div class="fix-text">Ensure VCC and GND of HC-05 are connected. Try pairing with password "1234" or "0000". Open a Bluetooth serial controller app and select the right COM port.</div>
+                    </div>
+                </div>
+
+                <!-- Issue 4: Arduino not powering on -->
+                <div class="issue-card">
+                    <h3 class="issue-title">
+                        <span class="issue-icon">🔋</span>
+                        Arduino not powering on
+                    </h3>
+                    
+                    <div class="cause-section">
+                        <div class="cause-label">Cause</div>
+                        <div class="cause-text">Battery not connected or low voltage.</div>
+                    </div>
+                    
+                    <div class="fix-section">
+                        <div class="fix-label">Fix</div>
+                        <div class="fix-text">Ensure all 3 batteries are inserted correctly. Use a multimeter to check voltage (should be above 7V if using UNO). Try using USB power to test.</div>
+                    </div>
+                </div>
+
+                <!-- Issue 5: Robot not avoiding obstacles -->
+                <div class="issue-card">
+                    <h3 class="issue-title">
+                        <span class="issue-icon">🚧</span>
+                        Robot not avoiding obstacles
+                    </h3>
+                    
+                    <div class="cause-section">
+                        <div class="cause-label">Cause</div>
+                        <div class="cause-text">Sensor working, but logic error in code or low power.</div>
+                    </div>
+                    
+                    <div class="fix-section">
+                        <div class="fix-label">Fix</div>
+                        <div class="fix-text">Make sure the ultrasonic sensor reads distance. Try printing values via Serial Monitor. If the robot still moves forward into walls, reload the code and check the logic.</div>
+                    </div>
+                </div>
+
+                <!-- Issue 6: Wheels moving in wrong direction -->
+                <div class="issue-card">
+                    <h3 class="issue-title">
+                        <span class="issue-icon">🔄</span>
+                        Wheels moving in wrong direction
+                    </h3>
+                    
+                    <div class="cause-section">
+                        <div class="cause-label">Cause</div>
+                        <div class="cause-text">Motor wires are reversed.</div>
+                    </div>
+                    
+                    <div class="fix-section">
+                        <div class="fix-label">Fix</div>
+                        <div class="fix-text">Swap the left or right motor wires on the motor driver to reverse the wheel direction. Or change HIGH/LOW values in the motor control code.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Call to Action Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="cta-title">Still stuck? Chat with us on WhatsApp!</h2>
+            <p class="cta-subtitle">Our support team is ready to help you get your robot working perfectly</p>
+            
+            <a href="https://wa.me/919999999999" class="whatsapp-btn">
+                <svg class="whatsapp-icon" viewBox="0 0 24 24">
+                    <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 2.079.549 4.03 1.595 5.702L.03 24l6.573-1.525c1.595.87 3.406 1.354 5.414 1.354 6.621 0 11.99-5.367 11.99-11.988C23.971 5.367 18.638.001 12.017.001zM19.071 16.105c-.297.832-1.717 1.517-2.365 1.615-.584.084-1.35.125-2.182-.137-.498-.156-1.137-.365-1.952-.717-3.439-1.485-5.686-4.914-5.858-5.14-.172-.227-1.406-1.866-1.406-3.561 0-1.695.891-2.531 1.208-2.876.317-.345.691-.431.922-.431s.46.005.66.012c.212.007.496-.081.775.592.297.717.996 2.43 1.084 2.607.088.177.147.382.029.609-.118.227-.177.364-.354.562-.177.198-.374.442-.534.594-.177.17-.362.353-.155.691.207.338.922 1.522 1.979 2.465 1.361 1.212 2.508 1.589 2.864 1.769.356.18.563.151.769-.091.207-.242.887-1.037 1.125-1.393.238-.356.475-.297.799-.178.325.118 2.058 1.029 2.411 1.215.356.186.594.279.682.432.088.154.088.892-.209 1.724z"/>
+                </svg>
+                Start WhatsApp Chat
+            </a>
+            
+            <p class="response-time">Usually responds within minutes</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p class="footer-logo">🤖 Build-A-Bot</p>
+            <p class="footer-tagline">Making robotics accessible for everyone</p>
+        </div>
+    </footer>
+</body>
+</html>
